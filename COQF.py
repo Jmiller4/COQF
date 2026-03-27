@@ -7,6 +7,7 @@ import numpy as np
 from functools import reduce
 from sklearn.metrics.pairwise import cosine_similarity
 import json
+import sys
 
 
 def binarize(df):
@@ -20,7 +21,7 @@ def standard_qf(donation_df):
 
 
 def extract_info_from_json(json_fpath):
-  with open('test-votes.json') as f:
+  with open(json_fpath) as f:
     votes_json = json.load(f)
 
   # get all the user ids
@@ -132,3 +133,11 @@ def COQF_sp26(json_fpath, calcstyle='cosine', harsh=False):
     # print()
   funding_final = {i: sqrt(funding[i+'-for']) - sqrt(funding[i+'-against']) for i in issues_comb}
   return funding_final
+
+
+if __name__ == '__main__':
+  votes_path = sys.argv[1]
+  results_path = sys.argv[2]
+  results = COQF_sp26(votes_path)
+  with open(results_path, "w") as f:
+    json.dump(results, f, indent=4)
